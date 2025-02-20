@@ -96,19 +96,15 @@
         let upgrades = [
             { name: "Watering System", cost: 50, baseCost: 50, auto: 1, count: 0 },
             { name: "Advanced Fertilizer", cost: 200, baseCost: 200, auto: 2, count: 0 },
-            { name: "Greenhouse", cost: 500, baseCost: 500, auto: 5, count: 0 }
+            { name: "Greenhouse", cost: 500, baseCost: 500, auto: 5, count: 0 },
+            { name: "Irrigation System", cost: 1000, baseCost: 1000, auto: 10, count: 0 },
+            { name: "Super Soil", cost: 5000, baseCost: 5000, auto: 50, count: 0 },
+            { name: "Sunlight Panels", cost: 10000, baseCost: 10000, auto: 100, count: 0 },
+            { name: "Pineapple Farm", cost: 25000, baseCost: 25000, auto: 200, count: 0 },
+            { name: "AI Farming", cost: 50000, baseCost: 50000, auto: 500, count: 0 },
+            { name: "Genetically Modified Seeds", cost: 100000, baseCost: 100000, auto: 1000, count: 0 },
+            { name: "Automated Harvesters", cost: 250000, baseCost: 250000, auto: 2500, count: 0 }
         ];
-        
-        function clickPineapple() {
-            score += perClick * prestigeBonus;
-            updateUI();
-        }
-        
-        function updateUI() {
-            document.getElementById("score").innerText = score;
-            document.getElementById("autoPerSec").innerText = autoClickers * prestigeBonus;
-            document.getElementById("prestige").innerText = prestigeBonus;
-        }
         
         function updateUpgrades() {
             let upgradeDiv = document.getElementById("upgrades");
@@ -116,7 +112,7 @@
             upgrades.forEach((upgrade, index) => {
                 let btn = document.createElement("button");
                 btn.className = "button";
-                btn.innerHTML = `${upgrade.name} - Cost: ${upgrade.cost} - Owned: ${upgrade.count}`;
+                btn.innerHTML = `${upgrade.name} - Cost: ${upgrade.cost} - Owned: ${upgrade.count} (+${upgrade.auto} Auto Clicks)`;
                 btn.onclick = function() {
                     if (score >= upgrade.cost) {
                         score -= upgrade.cost;
@@ -125,12 +121,14 @@
                         autoClickers += upgrade.auto;
                         updateUI();
                         updateUpgrades();
+                        saveGame();
                     }
                 };
                 upgradeDiv.appendChild(btn);
             });
         }
         
+        window.onload = loadGame;
         updateUpgrades();
     </script>
 </body>
