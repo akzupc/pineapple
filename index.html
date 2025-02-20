@@ -101,6 +101,31 @@
             saveGame();
         }
         
+        function saveGame() {
+            localStorage.setItem("pineappleScore", score);
+            localStorage.setItem("autoClickers", autoClickers);
+            localStorage.setItem("upgrades", JSON.stringify(upgrades));
+            localStorage.setItem("prestigeLevel", prestigeLevel);
+            localStorage.setItem("prestigeBonus", prestigeBonus);
+        }
+        
+        function loadGame() {
+            let savedScore = localStorage.getItem("pineappleScore");
+            let savedAutoClickers = localStorage.getItem("autoClickers");
+            let savedUpgrades = localStorage.getItem("upgrades");
+            let savedPrestigeLevel = localStorage.getItem("prestigeLevel");
+            let savedPrestigeBonus = localStorage.getItem("prestigeBonus");
+    
+            if (savedScore !== null) score = parseInt(savedScore);
+            if (savedAutoClickers !== null) autoClickers = parseInt(savedAutoClickers);
+            if (savedUpgrades !== null) upgrades = JSON.parse(savedUpgrades);
+            if (savedPrestigeLevel !== null) prestigeLevel = parseInt(savedPrestigeLevel);
+            if (savedPrestigeBonus !== null) prestigeBonus = parseInt(savedPrestigeBonus);
+    
+            updateUI();
+            updateUpgrades();
+        }
+        
         let upgrades = [
             { name: "Watering System", cost: 50, baseCost: 50, auto: 1, count: 0 },
             { name: "Advanced Fertilizer", cost: 200, baseCost: 200, auto: 2, count: 0 },
@@ -113,39 +138,6 @@
             { name: "Genetically Modified Seeds", cost: 100000, baseCost: 100000, auto: 1000, count: 0 },
             { name: "Automated Harvesters", cost: 250000, baseCost: 250000, auto: 2500, count: 0 }
         ];
-        
-        function updateUpgrades() {
-            let upgradeDiv = document.getElementById("upgrades");
-            upgradeDiv.innerHTML = "";
-            upgrades.forEach((upgrade, index) => {
-                let btn = document.createElement("button");
-                btn.className = "button";
-                btn.innerHTML = `${upgrade.name} - Cost: ${upgrade.cost} - Owned: ${upgrade.count} (+${upgrade.auto} Auto Clicks)`;
-                btn.onclick = function() {
-                    if (score >= upgrade.cost) {
-                        score -= upgrade.cost;
-                        upgrade.count++;
-                        upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.count));
-                        autoClickers += upgrade.auto;
-                        updateUI();
-                        updateUpgrades();
-                        saveGame();
-                    }
-                };
-                upgradeDiv.appendChild(btn);
-            });
-        }
-        
-        function updateUI() {
-            document.getElementById("score").innerText = score;
-            document.getElementById("autoPerSec").innerText = autoClickers;
-        }
-        
-        setInterval(() => {
-            score += autoClickers;
-            updateUI();
-            saveGame();
-        }, 1000);
         
         window.onload = function() {
             loadGame();
