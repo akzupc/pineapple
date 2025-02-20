@@ -111,6 +111,7 @@
         function clickPineapple() {
             score += perClick * prestigeBonus;
             updateUI();
+            saveGame(); // Save the game after clicking
         }
 
         function updateUI() {
@@ -122,6 +123,7 @@
         function autoGenerate() {
             score += autoClickers * prestigeBonus;
             updateUI();
+            saveGame(); // Save the game every second
         }
         
         function updateUpgrades() {
@@ -139,6 +141,7 @@
                         autoClickers += upgrade.auto;
                         updateUI();
                         updateUpgrades();
+                        saveGame(); // Save the game after upgrading
                     }
                 };
                 upgradeDiv.appendChild(btn);
@@ -157,6 +160,7 @@
                 });
                 updateUpgrades();
                 updateUI();
+                saveGame(); // Save the game after prestige reset
             }
         }
     
@@ -170,6 +174,7 @@
                 score += amount;
                 document.getElementById('score').innerText = score;
                 console.log(`Cheat activated: Added ${amount} pineapples! 🍍`);
+                saveGame(); // Save the game after cheating
             } else {
                 console.log("Invalid amount. Use a positive number.");
             }
@@ -205,6 +210,9 @@
         window.onload = function() {
             loadGame();
         }
+
+        // Periodically save the game every 5 seconds
+        setInterval(saveGame, 5000);
     </script>
 </body>
 </html>
