@@ -78,12 +78,11 @@
             <h3>Auto per second: <span id="autoPerSec">0</span></h3>
             <h3>Prestige Bonus: x<span id="prestige">1</span></h3>
             <img id="pineapple" src="vecteezy_pineapple-fruit-cartoon-illustration-isolated-on-transparent_47130664.png" onclick="clickPineapple()">
-            <button class="button" onclick="addpineapples(1000)">Add 1000 Pineapples (Cheat)</button>
         </div>
         <div id="right-section">
             <h3>Upgrades</h3>
             <div id="upgrades"></div>
-            <button class="button" onclick="prestige()" id="prestigeButton">Prestige Reset (Gain Bonus)</button>
+            <button class="button" onclick="prestige()">Prestige Reset (Gain Bonus)</button>
         </div>
     </div>
     <div id="notification">🎉 Congrats on 1M! 🎉</div>
@@ -112,24 +111,12 @@
         function clickPineapple() {
             score += perClick * prestigeBonus;
             updateUI();
-            saveGame();  // Save after clicking
         }
 
         function updateUI() {
             document.getElementById("score").innerText = score;
             document.getElementById("autoPerSec").innerText = autoClickers * prestigeBonus;
             document.getElementById("prestige").innerText = prestigeBonus;
-
-            // Disable prestige button if not enough score
-            document.getElementById("prestigeButton").disabled = score < prestigeRequirement;
-
-            // Show notification if score reaches 1 million
-            if (score >= prestigeRequirement && !document.getElementById("notification").style.display) {
-                document.getElementById("notification").style.display = "block";
-                setTimeout(() => {
-                    document.getElementById("notification").style.display = "none";
-                }, 5000);
-            }
         }
 
         function autoGenerate() {
@@ -152,13 +139,12 @@
                         autoClickers += upgrade.auto;
                         updateUI();
                         updateUpgrades();
-                        saveGame();  // Save after upgrading
                     }
                 };
                 upgradeDiv.appendChild(btn);
             });
         }
-
+    
         function prestige() {
             if (score >= prestigeRequirement) {
                 score = 0;
@@ -171,21 +157,25 @@
                 });
                 updateUpgrades();
                 updateUI();
-                saveGame();  // Save after prestiging
             }
         }
+    
+        setInterval(autoGenerate, 1000);
+        updateUI();
+        updateUpgrades();
 
+        // Add cheat function to console
         function addpineapples(amount) {
             if (typeof amount === 'number' && amount > 0) {
                 score += amount;
                 document.getElementById('score').innerText = score;
                 console.log(`Cheat activated: Added ${amount} pineapples! 🍍`);
-                saveGame();  // Save after cheat
             } else {
                 console.log("Invalid amount. Use a positive number.");
             }
         }
-
+        
+        // Save and load game
         function saveGame() {
             localStorage.setItem("pineappleScore", score);
             localStorage.setItem("autoClickers", autoClickers);
@@ -210,9 +200,6 @@
             updateUI();
             updateUpgrades();
         }
-
-        window.onload = loadGame;
-        setInterval(autoGenerate, 1000);
     </script>
 </body>
 </html>
