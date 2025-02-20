@@ -139,48 +139,41 @@
         }
         
         function updateUpgrades() {
-            let upgradesDiv = document.getElementById("upgrades");
-            upgradesDiv.innerHTML = "";
+            let upgradeDiv = document.getElementById("upgrades");
+            upgradeDiv.innerHTML = "";
             upgrades.forEach((upgrade, index) => {
-                let button = document.createElement("button");
-                button.classList.add("button");
-                button.innerText = `${upgrade.name} (Owned: ${upgrade.count}) - Cost: ${upgrade.cost}`;
-                button.onclick = function() { buyUpgrade(index); };
+                let btn = document.createElement("button");
+                btn.className = "button";
+                btn.innerHTML = `${upgrade.name} - Cost: ${upgrade.cost} - Owned: ${upgrade.count}`;
+                btn.onclick = function() {
+                    if (score >= upgrade.cost) {
+                        score -= upgrade.cost;
+                        upgrade.count++;
+                        upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.count));
+                        autoClickers += upgrade.auto;
+                        updateUI();
+                        updateUpgrades();
+                        saveGame();
+                    }
+                };
                 if (score < upgrade.cost) {
-                    button.disabled = true;
+                    btn.disabled = true;
                 }
-                upgradesDiv.appendChild(button);
+                upgradeDiv.appendChild(btn);
             });
         }
         
-        function buyUpgrade(index) {
-            if (score >= upgrades[index].cost) {
-                score -= upgrades[index].cost;
-                autoClickers += upgrades[index].auto;
-                upgrades[index].count++;
-                upgrades[index].cost = Math.floor(upgrades[index].baseCost * Math.pow(1.15, upgrades[index].count));
-                updateUI();
-                updateUpgrades();
-                saveGame();
-            }
-        }
-        
         let upgrades = [
-            { name: "Tiny Pineapple Farm", baseCost: 50, cost: 50, auto: 1, count: 0 },
-            { name: "Juicer Machine", baseCost: 150, cost: 150, auto: 2, count: 0 },
-            { name: "Pineapple Plantation", baseCost: 500, cost: 500, auto: 5, count: 0 },
-            { name: "Golden Pineapple Tree", baseCost: 1500, cost: 1500, auto: 10, count: 0 },
-            { name: "Pineapple Factory", baseCost: 5000, cost: 5000, auto: 25, count: 0 },
-            { name: "Pineapple Trader", baseCost: 10000, cost: 10000, auto: 50, count: 0 },
-            { name: "Automated Harvester", baseCost: 25000, cost: 25000, auto: 100, count: 0 },
-            { name: "Exotic Pineapple Research", baseCost: 50000, cost: 50000, auto: 200, count: 0 },
-            { name: "Pineapple Empire", baseCost: 100000, cost: 100000, auto: 500, count: 0 },
-            { name: "Solar-Powered Farm", baseCost: 250000, cost: 250000, auto: 1000, count: 0 },
-            { name: "Cybernetic Pineapples", baseCost: 500000, cost: 500000, auto: 2000, count: 0 },
-            { name: "Space Pineapple Colony", baseCost: 1000000, cost: 1000000, auto: 5000, count: 0 },
-            { name: "Interdimensional Pineapple Trade", baseCost: 2500000, cost: 2500000, auto: 10000, count: 0 },
-            { name: "Quantum Pineapple Generator", baseCost: 5000000, cost: 5000000, auto: 20000, count: 0 },
-            { name: "Godly Pineapple Essence", baseCost: 10000000, cost: 10000000, auto: 50000, count: 0 }
+            { name: "Watering System", cost: 50, baseCost: 50, auto: 1, count: 0 },
+            { name: "Advanced Fertilizer", cost: 200, baseCost: 200, auto: 2, count: 0 },
+            { name: "Greenhouse", cost: 500, baseCost: 500, auto: 5, count: 0 },
+            { name: "Automated Irrigation", cost: 1000, baseCost: 1000, auto: 7, count: 0 },
+            { name: "Solar Grow Lights", cost: 2000, baseCost: 2000, auto: 15, count: 0 },
+            { name: "AI Farming Drones", cost: 10000, baseCost: 10000, auto: 30, count: 0 },
+            { name: "Nano Growth Tech", cost: 50000, baseCost: 50000, auto: 80, count: 0 },
+            { name: "Robotic Harvesters", cost: 100000, baseCost: 100000, auto: 100, count: 0 },
+            { name: "Quantum Soil", cost: 250000, baseCost: 250000, auto: 150, count: 0 },
+            { name: "Bioengineered Pineapples", cost: 500000, baseCost: 500000, auto: 300, count: 0 }
         ];
         
         window.onload = function() {
