@@ -94,6 +94,12 @@
         let prestigeLevel = 0;
         let prestigeBonus = 1;
         
+        // Auto clicker function (runs every second)
+        function autoClick() {
+            score += autoClickers * prestigeBonus;
+            updateUI();
+        }
+        
         function clickPineapple() {
             score += perClick * prestigeBonus;
             updateUI();
@@ -138,7 +144,7 @@
             upgrades.forEach((upgrade, index) => {
                 let button = document.createElement("button");
                 button.classList.add("button");
-                button.innerText = `${upgrade.name} (Cost: ${upgrade.cost})`;
+                button.innerText = `${upgrade.name} (Owned: ${upgrade.count}) - Cost: ${upgrade.cost}`;
                 button.onclick = function() { buyUpgrade(index); };
                 if (score < upgrade.cost) {
                     button.disabled = true;
@@ -160,20 +166,27 @@
         }
         
         let upgrades = [
-            "Tiny Pineapple Farm", "Juicer Machine", "Pineapple Plantation", "Golden Pineapple Tree", "Pineapple Factory",
-            "Pineapple Trader", "Automated Harvester", "Exotic Pineapple Research", "Pineapple Empire", "Solar-Powered Farm",
-            "Cybernetic Pineapples", "Space Pineapple Colony", "Interdimensional Pineapple Trade", "Quantum Pineapple Generator", "Godly Pineapple Essence"
-        ].map((name, i) => ({
-            name,
-            cost: (i + 1) * 50,
-            baseCost: (i + 1) * 50,
-            auto: i + 1,
-            count: 0
-        }));
+            { name: "Tiny Pineapple Farm", baseCost: 50, cost: 50, auto: 1, count: 0 },
+            { name: "Juicer Machine", baseCost: 150, cost: 150, auto: 2, count: 0 },
+            { name: "Pineapple Plantation", baseCost: 500, cost: 500, auto: 5, count: 0 },
+            { name: "Golden Pineapple Tree", baseCost: 1500, cost: 1500, auto: 10, count: 0 },
+            { name: "Pineapple Factory", baseCost: 5000, cost: 5000, auto: 25, count: 0 },
+            { name: "Pineapple Trader", baseCost: 10000, cost: 10000, auto: 50, count: 0 },
+            { name: "Automated Harvester", baseCost: 25000, cost: 25000, auto: 100, count: 0 },
+            { name: "Exotic Pineapple Research", baseCost: 50000, cost: 50000, auto: 200, count: 0 },
+            { name: "Pineapple Empire", baseCost: 100000, cost: 100000, auto: 500, count: 0 },
+            { name: "Solar-Powered Farm", baseCost: 250000, cost: 250000, auto: 1000, count: 0 },
+            { name: "Cybernetic Pineapples", baseCost: 500000, cost: 500000, auto: 2000, count: 0 },
+            { name: "Space Pineapple Colony", baseCost: 1000000, cost: 1000000, auto: 5000, count: 0 },
+            { name: "Interdimensional Pineapple Trade", baseCost: 2500000, cost: 2500000, auto: 10000, count: 0 },
+            { name: "Quantum Pineapple Generator", baseCost: 5000000, cost: 5000000, auto: 20000, count: 0 },
+            { name: "Godly Pineapple Essence", baseCost: 10000000, cost: 10000000, auto: 50000, count: 0 }
+        ];
         
         window.onload = function() {
             loadGame();
             updateUpgrades();
+            setInterval(autoClick, 1000); // Runs auto-click every second
         };
     </script>
 </body>
