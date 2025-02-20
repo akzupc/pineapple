@@ -58,6 +58,9 @@
         .button:hover {
             background: #5a6fb3;
         }
+        #upgrades button {
+            text-align: left;
+        }
         #notification {
             display: none;
             color: yellow;
@@ -74,68 +77,17 @@
             <h2 style="color: yellow;">Pineapples: <span id="score">0</span></h2>
             <h3>Auto per second: <span id="autoPerSec">0</span></h3>
             <h3>Prestige Bonus: x<span id="prestige">1</span></h3>
-            <img id="pineapple" src="images/pineapple.png" onclick="clickPineapple()">
+            <img id="pineapple" src="vecteezy_pineapple-fruit-cartoon-illustration-isolated-on-transparent_47130664.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/c/cb/Pineapple_and_cross_section.jpg'" onclick="clickPineapple()">
         </div>
         <div id="right-section">
             <h3>Upgrades</h3>
             <div id="upgrades"></div>
-            <button class="button" id="prestige-btn" onclick="prestige()">Prestige Reset (Gain Bonus)</button>
+            <button class="button" onclick="prestige()">Prestige Reset (Gain Bonus)</button>
         </div>
     </div>
     <div id="notification">🎉 Congrats on 1M! 🎉</div>
     
     <script>
-        let score = 0;
-        let perClick = 1;
-        let autoClickers = 0;
-        let prestigeLevel = 0;
-        let prestigeBonus = Math.max(1, prestigeLevel * 5);
-        let prestigeRequirement = 1000000;
-        
-        let upgrades = [
-            { name: "Watering System", cost: 50, baseCost: 50, auto: 1, count: 0 },
-            { name: "Advanced Fertilizer", cost: 200, baseCost: 200, auto: 2, count: 0 },
-            { name: "Greenhouse", cost: 500, baseCost: 500, auto: 5, count: 0 }
-        ];
-
-        function saveGame() {
-            let gameData = { score, autoClickers, prestigeLevel, prestigeBonus, upgrades };
-            localStorage.setItem("pineappleClickerSave", JSON.stringify(gameData));
-        }
-
-        function loadGame() {
-            let savedData = localStorage.getItem("pineappleClickerSave");
-            if (savedData) {
-                let data = JSON.parse(savedData);
-                score = data.score;
-                autoClickers = data.autoClickers;
-                prestigeLevel = data.prestigeLevel;
-                prestigeBonus = Math.max(1, prestigeLevel * 5);
-                upgrades = data.upgrades;
-            }
-            updateUI();
-            updateUpgrades();
-        }
-
-        function clickPineapple() {
-            score += perClick * prestigeBonus;
-            updateUI();
-            saveGame();
-        }
-
-        function updateUI() {
-            document.getElementById("score").innerText = score;
-            document.getElementById("autoPerSec").innerText = autoClickers * prestigeBonus;
-            document.getElementById("prestige").innerText = prestigeBonus;
-            document.getElementById("prestige-btn").disabled = score < prestigeRequirement;
-        }
-
-        function autoGenerate() {
-            score += autoClickers * prestigeBonus;
-            updateUI();
-            saveGame();
-        }
-        
         function updateUpgrades() {
             let upgradeDiv = document.getElementById("upgrades");
             upgradeDiv.innerHTML = "";
@@ -147,7 +99,7 @@
                     if (score >= upgrade.cost) {
                         score -= upgrade.cost;
                         upgrade.count++;
-                        upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.10, upgrade.count));
+                        upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.count));
                         autoClickers += upgrade.auto;
                         updateUI();
                         updateUpgrades();
@@ -157,26 +109,8 @@
                 upgradeDiv.appendChild(btn);
             });
         }
-    
-        function prestige() {
-            if (score >= prestigeRequirement) {
-                score = 0;
-                autoClickers = 0;
-                prestigeLevel++;
-                prestigeBonus = Math.max(1, prestigeLevel * 5);
-                upgrades.forEach(upgrade => {
-                    upgrade.cost = upgrade.baseCost;
-                    upgrade.count = 0;
-                });
-                updateUpgrades();
-                updateUI();
-                saveGame();
-            }
-        }
-
-        setInterval(autoGenerate, 1000);
-        window.addEventListener("beforeunload", saveGame);
-        loadGame();
+        
+        updateUpgrades();
     </script>
 </body>
 </html>
