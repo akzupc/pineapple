@@ -179,7 +179,7 @@
         function saveGame() {
             localStorage.setItem("pineappleScore", score);
             localStorage.setItem("autoClickers", autoClickers);
-            localStorage.setItem("upgrades", JSON.stringify(upgrades));
+            localStorage.setItem("upgrades", JSON.stringify(upgrades));  // Saving upgrades array
             localStorage.setItem("prestigeLevel", prestigeLevel);
             localStorage.setItem("prestigeBonus", prestigeBonus);
         }
@@ -193,12 +193,17 @@
 
             if (savedScore !== null) score = parseInt(savedScore);
             if (savedAutoClickers !== null) autoClickers = parseInt(savedAutoClickers);
-            if (savedUpgrades !== null) upgrades = JSON.parse(savedUpgrades);
+            if (savedUpgrades !== null) upgrades = JSON.parse(savedUpgrades); // Parsing upgrades array
             if (savedPrestigeLevel !== null) prestigeLevel = parseInt(savedPrestigeLevel);
             if (savedPrestigeBonus !== null) prestigeBonus = parseInt(savedPrestigeBonus);
 
             updateUI();
             updateUpgrades();
+        }
+
+        // Ensure to load the game data when the page is loaded
+        window.onload = function() {
+            loadGame();
         }
     </script>
 </body>
