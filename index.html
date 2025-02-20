@@ -132,18 +132,40 @@
             document.getElementById("prestige").innerText = prestigeBonus;
         }
         
-        let upgrades = [
-            { name: "Watering System", cost: 50, baseCost: 50, auto: 1, count: 0 },
-            { name: "Advanced Fertilizer", cost: 200, baseCost: 200, auto: 2, count: 0 },
-            { name: "Greenhouse", cost: 500, baseCost: 500, auto: 5, count: 0 },
-            { name: "Irrigation System", cost: 1000, baseCost: 1000, auto: 10, count: 0 },
-            { name: "Super Soil", cost: 5000, baseCost: 5000, auto: 50, count: 0 },
-            { name: "Sunlight Panels", cost: 10000, baseCost: 10000, auto: 100, count: 0 },
-            { name: "Pineapple Farm", cost: 25000, baseCost: 25000, auto: 200, count: 0 },
-            { name: "AI Farming", cost: 50000, baseCost: 50000, auto: 500, count: 0 },
-            { name: "Genetically Modified Seeds", cost: 100000, baseCost: 100000, auto: 1000, count: 0 },
-            { name: "Automated Harvesters", cost: 250000, baseCost: 250000, auto: 2500, count: 0 }
-        ];
+        function updateUpgrades() {
+            let upgradesDiv = document.getElementById("upgrades");
+            upgradesDiv.innerHTML = "";
+            upgrades.forEach((upgrade, index) => {
+                let button = document.createElement("button");
+                button.classList.add("button");
+                button.innerText = `${upgrade.name} (Cost: ${upgrade.cost})`;
+                button.onclick = function() { buyUpgrade(index); };
+                if (score < upgrade.cost) {
+                    button.disabled = true;
+                }
+                upgradesDiv.appendChild(button);
+            });
+        }
+        
+        function buyUpgrade(index) {
+            if (score >= upgrades[index].cost) {
+                score -= upgrades[index].cost;
+                autoClickers += upgrades[index].auto;
+                upgrades[index].count++;
+                upgrades[index].cost = Math.floor(upgrades[index].baseCost * Math.pow(1.15, upgrades[index].count));
+                updateUI();
+                updateUpgrades();
+                saveGame();
+            }
+        }
+        
+        let upgrades = Array.from({ length: 15 }, (_, i) => ({
+            name: `Upgrade ${i + 1}`,
+            cost: (i + 1) * 50,
+            baseCost: (i + 1) * 50,
+            auto: i + 1,
+            count: 0
+        }));
         
         window.onload = function() {
             loadGame();
