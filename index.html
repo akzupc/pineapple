@@ -88,6 +88,28 @@
     <div id="notification">🎉 Congrats on 1M! 🎉</div>
     
     <script>
+        let score = 0;
+        let perClick = 1;
+        let autoClickers = 0;
+        let prestigeLevel = 0;
+        let prestigeBonus = 1;
+        let upgrades = [
+            { name: "Watering System", cost: 50, baseCost: 50, auto: 1, count: 0 },
+            { name: "Advanced Fertilizer", cost: 200, baseCost: 200, auto: 2, count: 0 },
+            { name: "Greenhouse", cost: 500, baseCost: 500, auto: 5, count: 0 }
+        ];
+        
+        function clickPineapple() {
+            score += perClick * prestigeBonus;
+            updateUI();
+        }
+        
+        function updateUI() {
+            document.getElementById("score").innerText = score;
+            document.getElementById("autoPerSec").innerText = autoClickers * prestigeBonus;
+            document.getElementById("prestige").innerText = prestigeBonus;
+        }
+        
         function updateUpgrades() {
             let upgradeDiv = document.getElementById("upgrades");
             upgradeDiv.innerHTML = "";
@@ -103,7 +125,6 @@
                         autoClickers += upgrade.auto;
                         updateUI();
                         updateUpgrades();
-                        saveGame();
                     }
                 };
                 upgradeDiv.appendChild(btn);
