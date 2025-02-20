@@ -93,6 +93,13 @@
         let autoClickers = 0;
         let prestigeLevel = 0;
         let prestigeBonus = 1;
+        
+        function clickPineapple() {
+            score += perClick * prestigeBonus;
+            updateUI();
+            saveGame();
+        }
+        
         let upgrades = [
             { name: "Watering System", cost: 50, baseCost: 50, auto: 1, count: 0 },
             { name: "Advanced Fertilizer", cost: 200, baseCost: 200, auto: 2, count: 0 },
@@ -128,8 +135,21 @@
             });
         }
         
-        window.onload = loadGame;
-        updateUpgrades();
+        function updateUI() {
+            document.getElementById("score").innerText = score;
+            document.getElementById("autoPerSec").innerText = autoClickers;
+        }
+        
+        setInterval(() => {
+            score += autoClickers;
+            updateUI();
+            saveGame();
+        }, 1000);
+        
+        window.onload = function() {
+            loadGame();
+            updateUpgrades();
+        };
     </script>
 </body>
 </html>
