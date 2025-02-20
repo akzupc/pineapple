@@ -77,7 +77,7 @@
             <h2 style="color: yellow;">Pineapples: <span id="score">0</span></h2>
             <h3>Auto per second: <span id="autoPerSec">0</span></h3>
             <h3>Prestige Bonus: x<span id="prestige">1</span></h3>
-            <img id="pineapple" src="vecteezy_pineapple-fruit-cartoon-illustration-isolated-on-transparent_47130664.png" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/c/cb/Pineapple_and_cross_section.jpg'" onclick="clickPineapple()">
+            <img id="pineapple" src="vecteezy_pineapple-fruit-cartoon-illustration-isolated-on-transparent_47130664.png" onclick="clickPineapple()">
         </div>
         <div id="right-section">
             <h3>Upgrades</h3>
@@ -93,51 +93,34 @@
         let autoClickers = 0;
         let prestigeLevel = 0;
         let prestigeBonus = 1;
-        
-        // Auto clicker function (runs every second)
-        function autoClick() {
-            score += autoClickers * prestigeBonus;
-            updateUI();
-        }
-        
+        let prestigeRequirement = 1000000;
+
+        let upgrades = [
+            { name: "Watering System", cost: 50, baseCost: 50, auto: 1, count: 0 },
+            { name: "Advanced Fertilizer", cost: 200, baseCost: 200, auto: 2, count: 0 },
+            { name: "Greenhouse", cost: 500, baseCost: 500, auto: 5, count: 0 },
+            { name: "Automated Irrigation", cost: 1000, baseCost: 1000, auto: 7, count: 0 },
+            { name: "Solar Grow Lights", cost: 2000, baseCost: 2000, auto: 15, count: 0 },
+            { name: "AI Farming Drones", cost: 10000, baseCost: 10000, auto: 30, count: 0 },
+            { name: "Nano Growth Tech", cost: 50000, baseCost: 50000, auto: 80, count: 0 },
+            { name: "Robotic Harvesters", cost: 100000, baseCost: 100000, auto: 100, count: 0 },
+            { name: "Quantum Soil", cost: 250000, baseCost: 250000, auto: 150, count: 0 },
+            { name: "Bioengineered Pineapples", cost: 500000, baseCost: 500000, auto: 300, count: 0 }
+        ];
+
         function clickPineapple() {
             score += perClick * prestigeBonus;
             updateUI();
             updateUpgrades();
             saveGame();
         }
-        
-        function saveGame() {
-            localStorage.setItem("pineappleScore", score);
-            localStorage.setItem("autoClickers", autoClickers);
-            localStorage.setItem("upgrades", JSON.stringify(upgrades));
-            localStorage.setItem("prestigeLevel", prestigeLevel);
-            localStorage.setItem("prestigeBonus", prestigeBonus);
-        }
-        
-        function loadGame() {
-            let savedScore = localStorage.getItem("pineappleScore");
-            let savedAutoClickers = localStorage.getItem("autoClickers");
-            let savedUpgrades = localStorage.getItem("upgrades");
-            let savedPrestigeLevel = localStorage.getItem("prestigeLevel");
-            let savedPrestigeBonus = localStorage.getItem("prestigeBonus");
-    
-            if (savedScore !== null) score = parseInt(savedScore);
-            if (savedAutoClickers !== null) autoClickers = parseInt(savedAutoClickers);
-            if (savedUpgrades !== null) upgrades = JSON.parse(savedUpgrades);
-            if (savedPrestigeLevel !== null) prestigeLevel = parseInt(savedPrestigeLevel);
-            if (savedPrestigeBonus !== null) prestigeBonus = parseInt(savedPrestigeBonus);
-    
-            updateUI();
-            updateUpgrades();
-        }
-        
+
         function updateUI() {
             document.getElementById("score").innerText = score;
-            document.getElementById("autoPerSec").innerText = autoClickers;
+            document.getElementById("autoPerSec").innerText = autoClickers * prestigeBonus;
             document.getElementById("prestige").innerText = prestigeBonus;
         }
-        
+
         function updateUpgrades() {
             let upgradeDiv = document.getElementById("upgrades");
             upgradeDiv.innerHTML = "";
@@ -162,24 +145,59 @@
                 upgradeDiv.appendChild(btn);
             });
         }
-        
-        let upgrades = [
-            { name: "Watering System", cost: 50, baseCost: 50, auto: 1, count: 0 },
-            { name: "Advanced Fertilizer", cost: 200, baseCost: 200, auto: 2, count: 0 },
-            { name: "Greenhouse", cost: 500, baseCost: 500, auto: 5, count: 0 },
-            { name: "Automated Irrigation", cost: 1000, baseCost: 1000, auto: 7, count: 0 },
-            { name: "Solar Grow Lights", cost: 2000, baseCost: 2000, auto: 15, count: 0 },
-            { name: "AI Farming Drones", cost: 10000, baseCost: 10000, auto: 30, count: 0 },
-            { name: "Nano Growth Tech", cost: 50000, baseCost: 50000, auto: 80, count: 0 },
-            { name: "Robotic Harvesters", cost: 100000, baseCost: 100000, auto: 100, count: 0 },
-            { name: "Quantum Soil", cost: 250000, baseCost: 250000, auto: 150, count: 0 },
-            { name: "Bioengineered Pineapples", cost: 500000, baseCost: 500000, auto: 300, count: 0 }
-        ];
-        
+
+        function prestige() {
+            if (score >= prestigeRequirement) {
+                score = 0;
+                autoClickers = 0;
+                prestigeLevel++;
+                prestigeBonus = prestigeLevel * 5;
+                upgrades.forEach(upgrade => {
+                    upgrade.cost = upgrade.baseCost;
+                    upgrade.count = 0;
+                });
+                updateUpgrades();
+                updateUI();
+                saveGame();
+            }
+        }
+
+        function saveGame() {
+            localStorage.setItem("pineappleScore", score);
+            localStorage.setItem("autoClickers", autoClickers);
+            localStorage.setItem("upgrades", JSON.stringify(upgrades));
+            localStorage.setItem("prestigeLevel", prestigeLevel);
+            localStorage.setItem("prestigeBonus", prestigeBonus);
+        }
+
+        function loadGame() {
+            let savedScore = localStorage.getItem("pineappleScore");
+            let savedAutoClickers = localStorage.getItem("autoClickers");
+            let savedUpgrades = localStorage.getItem("upgrades");
+            let savedPrestigeLevel = localStorage.getItem("prestigeLevel");
+            let savedPrestigeBonus = localStorage.getItem("prestigeBonus");
+
+            if (savedScore !== null) score = parseInt(savedScore);
+            if (savedAutoClickers !== null) autoClickers = parseInt(savedAutoClickers);
+            if (savedUpgrades !== null) upgrades = JSON.parse(savedUpgrades);
+            if (savedPrestigeLevel !== null) prestigeLevel = parseInt(savedPrestigeLevel);
+            if (savedPrestigeBonus !== null) prestigeBonus = parseInt(savedPrestigeBonus);
+
+            updateUI();
+            updateUpgrades();
+        }
+
+        function autoGenerate() {
+            score += autoClickers * prestigeBonus;
+            updateUI();
+            saveGame();
+        }
+
+        setInterval(autoGenerate, 1000); // Runs auto-click every second
+
         window.onload = function() {
             loadGame();
             updateUpgrades();
-            setInterval(autoClick, 1000); // Runs auto-click every second
         };
     </script>
 </body>
