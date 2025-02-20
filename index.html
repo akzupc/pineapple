@@ -126,6 +126,12 @@
             updateUpgrades();
         }
         
+        function updateUI() {
+            document.getElementById("score").innerText = score;
+            document.getElementById("autoPerSec").innerText = autoClickers;
+            document.getElementById("prestige").innerText = prestigeBonus;
+        }
+        
         let upgrades = [
             { name: "Watering System", cost: 50, baseCost: 50, auto: 1, count: 0 },
             { name: "Advanced Fertilizer", cost: 200, baseCost: 200, auto: 2, count: 0 },
