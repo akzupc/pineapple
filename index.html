@@ -159,8 +159,12 @@
             }
         }
         
-        let upgrades = Array.from({ length: 15 }, (_, i) => ({
-            name: `Upgrade ${i + 1}`,
+        let upgrades = [
+            "Tiny Pineapple Farm", "Juicer Machine", "Pineapple Plantation", "Golden Pineapple Tree", "Pineapple Factory",
+            "Pineapple Trader", "Automated Harvester", "Exotic Pineapple Research", "Pineapple Empire", "Solar-Powered Farm",
+            "Cybernetic Pineapples", "Space Pineapple Colony", "Interdimensional Pineapple Trade", "Quantum Pineapple Generator", "Godly Pineapple Essence"
+        ].map((name, i) => ({
+            name,
             cost: (i + 1) * 50,
             baseCost: (i + 1) * 50,
             auto: i + 1,
