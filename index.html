@@ -132,7 +132,7 @@
             upgrades.forEach((upgrade, index) => {
                 let btn = document.createElement("button");
                 btn.className = "button";
-                btn.innerHTML = ${upgrade.name} - Cost: ${upgrade.cost} - Owned: ${upgrade.count};
+                btn.innerHTML = `${upgrade.name} - Cost: ${upgrade.cost} - Owned: ${upgrade.count}`;
                 btn.onclick = function() {
                     if (score >= upgrade.cost) {
                         score -= upgrade.cost;
@@ -153,7 +153,7 @@
                 score = 0;
                 autoClickers = 0;
                 prestigeLevel++;
-                prestigeBonus = prestigeLevel * 1000;
+                prestigeBonus = prestigeLevel * 10000;
                 upgrades.forEach(upgrade => {
                     upgrade.cost = upgrade.baseCost;
                     upgrade.count = 0;
@@ -173,7 +173,7 @@
             if (typeof amount === 'number' && amount > 0) {
                 score += amount;
                 document.getElementById('score').innerText = score;
-                console.log(Cheat activated: Added ${amount} pineapples! 🍍);
+                console.log(`Cheat activated: Added ${amount} pineapples! 🍍`);
                 saveGame(); // Save the game after cheating
             } else {
                 console.log("Invalid amount. Use a positive number.");
