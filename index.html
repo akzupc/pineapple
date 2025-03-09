@@ -108,6 +108,46 @@
             { name: "Bioengineered Pineapples", cost: 500000, baseCost: 500000, auto: 300, count: 0 }
         ];
         
+        function clickPineapple() {
+            score += perClick * prestigeBonus;
+            updateUI();
+            saveGame(); // Save the game after clicking
+        }
+
+        function updateUI() {
+            document.getElementById("score").innerText = score;
+            document.getElementById("autoPerSec").innerText = autoClickers * prestigeBonus;
+            document.getElementById("prestige").innerText = prestigeBonus;
+        }
+
+        function autoGenerate() {
+            score += autoClickers * prestigeBonus;
+            updateUI();
+            saveGame(); // Save the game every second
+        }
+        
+        function updateUpgrades() {
+            let upgradeDiv = document.getElementById("upgrades");
+            upgradeDiv.innerHTML = "";
+            upgrades.forEach((upgrade, index) => {
+                let btn = document.createElement("button");
+                btn.className = "button";
+                btn.innerHTML = ${upgrade.name} - Cost: ${upgrade.cost} - Owned: ${upgrade.count};
+                btn.onclick = function() {
+                    if (score >= upgrade.cost) {
+                        score -= upgrade.cost;
+                        upgrade.count++;
+                        upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.15, upgrade.count));
+                        autoClickers += upgrade.auto;
+                        updateUI();
+                        updateUpgrades();
+                        saveGame(); // Save the game after upgrading
+                    }
+                };
+                upgradeDiv.appendChild(btn);
+            });
+        }
+    
         function prestige() {
             if (score >= prestigeRequirement) {
                 score = 0;
@@ -120,9 +160,59 @@
                 });
                 updateUpgrades();
                 updateUI();
-                saveGame();
+                saveGame(); // Save the game after prestige reset
             }
         }
+    
+        setInterval(autoGenerate, 1000);
+        updateUI();
+        updateUpgrades();
+
+        // Add cheat function to console
+        function addpineapples(amount) {
+            if (typeof amount === 'number' && amount > 0) {
+                score += amount;
+                document.getElementById('score').innerText = score;
+                console.log(Cheat activated: Added ${amount} pineapples! 🍍);
+                saveGame(); // Save the game after cheating
+            } else {
+                console.log("Invalid amount. Use a positive number.");
+            }
+        }
+        
+        // Save and load game
+        function saveGame() {
+            localStorage.setItem("pineappleScore", score);
+            localStorage.setItem("autoClickers", autoClickers);
+            localStorage.setItem("upgrades", JSON.stringify(upgrades));  // Saving upgrades array
+            localStorage.setItem("prestigeLevel", prestigeLevel);
+            localStorage.setItem("prestigeBonus", prestigeBonus);
+        }
+
+        function loadGame() {
+            let savedScore = localStorage.getItem("pineappleScore");
+            let savedAutoClickers = localStorage.getItem("autoClickers");
+            let savedUpgrades = localStorage.getItem("upgrades");
+            let savedPrestigeLevel = localStorage.getItem("prestigeLevel");
+            let savedPrestigeBonus = localStorage.getItem("prestigeBonus");
+
+            if (savedScore !== null) score = parseInt(savedScore);
+            if (savedAutoClickers !== null) autoClickers = parseInt(savedAutoClickers);
+            if (savedUpgrades !== null) upgrades = JSON.parse(savedUpgrades); // Parsing upgrades array
+            if (savedPrestigeLevel !== null) prestigeLevel = parseInt(savedPrestigeLevel);
+            if (savedPrestigeBonus !== null) prestigeBonus = parseInt(savedPrestigeBonus);
+
+            updateUI();
+            updateUpgrades();
+        }
+
+        // Ensure to load the game data when the page is loaded
+        window.onload = function() {
+            loadGame();
+        }
+
+        // Periodically save the game every 5 seconds
+        setInterval(saveGame, 5000);
     </script>
 </body>
 </html>
